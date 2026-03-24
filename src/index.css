@@ -3,11 +3,9 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ── Reset & Base ──────────────────────────────────────── */
 * { margin: 0; padding: 0; box-sizing: border-box; }
 html { scroll-behavior: smooth; }
 
-/* Single font stack for ALL languages — no font switching */
 body {
   font-family: 'Montserrat', 'Inter', system-ui, -apple-system, sans-serif;
   background: #fff;
@@ -15,7 +13,6 @@ body {
   overflow-x: hidden;
 }
 
-/* Mobile viewport fix */
 html, body { height: 100%; }
 #root { height: 100%; }
 
@@ -23,16 +20,13 @@ html, body { height: 100%; }
 ::-webkit-scrollbar-thumb { background: #CC0000; border-radius: 3px; }
 ::-webkit-scrollbar-track { background: #f0f0f0; }
 
-/* ── Font utilities ────────────────────────────────────── */
 .font-bebas { font-family: 'Bebas Neue', 'Montserrat', sans-serif; }
 .font-mont  { font-family: 'Montserrat', sans-serif; }
 .font-inter { font-family: 'Inter', 'Montserrat', sans-serif; }
 
-/* ── Page transitions ──────────────────────────────────── */
 .page-enter { animation: fadeUp .5s ease forwards; }
 @keyframes fadeUp { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
 
-/* ── Grid patterns ─────────────────────────────────────── */
 .bg-grid-light {
   background-image: linear-gradient(rgba(204,0,0,.04) 1px, transparent 1px),
                     linear-gradient(90deg, rgba(204,0,0,.04) 1px, transparent 1px);
@@ -44,10 +38,8 @@ html, body { height: 100%; }
   background-size: 56px 56px;
 }
 
-/* ── Text effects ──────────────────────────────────────── */
 .text-stroke-red { color: transparent; -webkit-text-stroke: 2px #CC0000; }
 
-/* ── Form elements ─────────────────────────────────────── */
 input, select, textarea, button {
   font-family: 'Montserrat', 'Inter', system-ui, sans-serif;
 }
@@ -80,15 +72,12 @@ select {
   padding-right: 36px !important;
 }
 
-/* ── Glow effects ──────────────────────────────────────── */
 .red-glow  { box-shadow: 0 0 32px rgba(204,0,0,.2); }
 .gold-glow { box-shadow: 0 0 24px rgba(245,197,24,.2); }
 
-/* ── Hover lift ────────────────────────────────────────── */
 .hover-lift { transition: transform .25s, box-shadow .25s; }
 .hover-lift:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,.08); }
 
-/* ── Section label ─────────────────────────────────────── */
 .section-label-row {
   display: inline-flex; align-items: center; gap: 8px;
   color: #CC0000; font-size: 10px; font-weight: 700;
@@ -98,7 +87,6 @@ select {
   content: ''; width: 24px; height: 1px; background: #CC0000;
 }
 
-/* ── Table ─────────────────────────────────────────────── */
 .data-table { width: 100%; border-collapse: collapse; }
 .data-table th {
   padding: 10px 14px; font-size: 10px; font-weight: 700;
@@ -113,10 +101,8 @@ select {
 .data-table tr:hover td { background: #fafafa; }
 .data-table tr:last-child td { border-bottom: none; }
 
-/* Mobile table scroll wrapper */
 .table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
 
-/* ── Badges ────────────────────────────────────────────── */
 .badge {
   display: inline-block; padding: 3px 8px;
   font-size: 9px; font-weight: 700; letter-spacing: .5px; text-transform: uppercase;
@@ -128,7 +114,6 @@ select {
 .badge-progress { background: rgba(59,130,246,.1); color: #1d4ed8; border: 1px solid rgba(59,130,246,.25); }
 .badge-todo     { background: rgba(107,114,128,.1);color: #374151; border: 1px solid rgba(107,114,128,.25); }
 
-/* ── Staff cards ───────────────────────────────────────── */
 .staff-card {
   background: #fff;
   border: 1px solid rgba(0,0,0,.08);
@@ -136,15 +121,11 @@ select {
 }
 .staff-card:hover { border-color: rgba(204,0,0,.2); }
 
-/* ── Chat bubbles ──────────────────────────────────────── */
 .chat-bubble-me   { background: #CC0000; color: #fff; border-radius: 16px 16px 4px 16px; }
 .chat-bubble-them { background: #f0f0f0; color: #111; border-radius: 16px 16px 16px 4px; }
 
-/* ── Drop zone ─────────────────────────────────────────── */
 .drop-zone { border: 2px dashed #e0e0e0; transition: all .2s; cursor: pointer; }
 .drop-zone:hover, .drop-zone.active { border-color: #CC0000; background: rgba(204,0,0,.02); }
-
-/* ── Calculator buttons ────────────────────────────────── */
 .calc-btn {
   background: #f8f8f8;
   border: 1px solid #e8e8e8;
@@ -165,35 +146,25 @@ select {
 .calc-btn.eq:hover { background: #990000; }
 .calc-btn.clear  { color: #dc2626; }
 
-/* ── Mobile adjustments ────────────────────────────────── */
 @media (max-width: 640px) {
   .font-bebas { letter-spacing: 0.02em; }
 
-  /* Prevent font scaling issues on iOS */
   html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
 
-  /* Better tap targets */
   button, a { min-height: 36px; }
 
-  /* Calc buttons smaller on mobile */
   .calc-btn { padding: 10px 6px; font-size: 13px; }
 
-  /* Tables */
   .data-table th, .data-table td { padding: 8px 10px; font-size: 11px; }
 }
 
-/* ── Safe area for notched phones ──────────────────────── */
 @supports (padding: env(safe-area-inset-bottom)) {
   .pb-safe { padding-bottom: env(safe-area-inset-bottom); }
 }
 
-/* ── Animations ────────────────────────────────────────── */
 @keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-4px)} }
 .animate-bounce { animation: bounce 1s infinite; }
 
-/* ── Universal font — works for all 3 languages ─────────── */
-/* Montserrat supports Cyrillic (RU/KY) and Latin (EN) */
-/* No font switching needed — one font for all */
 h1, h2, h3, h4, h5, h6 {
   font-family: 'Bebas Neue', 'Montserrat', system-ui, sans-serif;
 }
@@ -201,17 +172,14 @@ p, span, div, a, button, input, select, textarea, li, td, th {
   font-family: inherit;
 }
 
-/* Prevent iOS font size bump */
 @media screen and (max-width: 640px) {
   input, select, textarea {
-    font-size: 16px !important; /* prevents iOS zoom */
+    font-size: 16px !important; 
   }
 }
 
-/* ── Sticky partners banner ─────────────────────────────── */
 .partners-banner { will-change: transform; }
 
-/* ── Line clamp ─────────────────────────────────────────── */
 .line-clamp-2 {
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -225,7 +193,6 @@ p, span, div, a, button, input, select, textarea, li, td, th {
   overflow: hidden;
 }
 
-/* ── Tailwind color tokens (referenced in JSX) ──────────── */
 :root {
   --color-primary: #CC0000;
   --color-gold: #F5C518;

@@ -15,7 +15,6 @@ export default function CarouselSection() {
     setIdx(prev => (prev + dir + total) % total)
   }
 
-  // Auto-scroll every 3.5s
   useEffect(() => {
     if (!isPaused) {
       timerRef.current = setInterval(() => go(1), 3500)
@@ -77,7 +76,6 @@ export default function CarouselSection() {
           </AnimatePresence>
         </div>
 
-        {/* Dots */}
         <div className="flex justify-center gap-2 mt-6">
           {data.gallery.map((_,i)=>(
             <button key={i} onClick={()=>setIdx(i)}

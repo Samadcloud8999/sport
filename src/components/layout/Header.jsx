@@ -37,7 +37,6 @@ export default function Header() {
 
   return (
     <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${navBg}`}>
-      {/* Top stripe */}
       <div className="bg-primary py-1.5 px-4">
         <div className="max-w-7xl mx-auto flex justify-between items-center">
           <span className="text-white/80 text-xs font-inter hidden md:block">
@@ -54,7 +53,6 @@ export default function Header() {
         </div>
       </div>
 
-      {/* Main nav */}
       <nav className="max-w-7xl mx-auto px-4 h-14 flex items-center justify-between gap-4">
         <Link to="/" className="flex items-center gap-2.5 flex-shrink-0 group">
           <div className="w-9 h-9 bg-primary flex items-center justify-center font-bebas text-white text-base tracking-wider group-hover:bg-gold transition-colors">КР</div>
@@ -64,7 +62,6 @@ export default function Header() {
           </div>
         </Link>
 
-        {/* Desktop links */}
         <div className="hidden lg:flex items-center gap-0.5">
           {links.map(({ key, path }) => {
             const active = loc.pathname === path || (path !== '/' && loc.pathname.startsWith(path))
@@ -93,7 +90,6 @@ export default function Header() {
         </div>
       </nav>
 
-      {/* Mobile menu */}
       {mobileOpen && (
         <div className="lg:hidden bg-white border-t border-black/8 shadow-lg">
           {links.map(({ key, path }) => (
