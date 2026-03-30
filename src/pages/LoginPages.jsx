@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { useApp } from '../context/AppContext'
 import { Lock, User, AlertCircle, Shield, Users, Eye, EyeOff, CheckCircle, Clock, ChevronLeft, UserPlus } from 'lucide-react'
 
+// ── Admin Login ────────────────────────────────────────────
 export function AdminLoginPage() {
   const { adminLogin } = useApp()
   const nav = useNavigate()
@@ -82,16 +83,20 @@ export function AdminLoginPage() {
   )
 }
 
+// ── Staff Login + Register ─────────────────────────────────
 export function StaffLoginPage() {
   const { data, staffLogin, staffRegister } = useApp()
   const nav = useNavigate()
 
+  // view: 'login' | 'register' | 'success' | 'pending_notice'
   const [view, setView] = useState('login')
 
+  // Login state
   const [creds, setCreds] = useState({ user: '', pass: '' })
   const [loginError, setLoginError] = useState('')
   const [showPass, setShowPass] = useState(false)
 
+  // Register state
   const [regForm, setRegForm] = useState({
     name: '', login: '', pass: '', confirmPass: '',
     dept: '', role: '',
@@ -144,6 +149,7 @@ export function StaffLoginPage() {
     <div className="min-h-screen bg-surf2 flex items-center justify-center px-4 py-8">
       <motion.div initial={{ opacity:0, y:20 }} animate={{ opacity:1, y:0 }} className="w-full max-w-md">
 
+        {/* Logo */}
         <div className="text-center mb-8">
           <div className="w-14 h-14 bg-primary mx-auto flex items-center justify-center font-bebas text-2xl text-white mb-4 shadow-lg shadow-primary/25">КР</div>
           <div className="font-bebas text-2xl text-ink tracking-wider">ЦПМС КР</div>
@@ -152,6 +158,7 @@ export function StaffLoginPage() {
 
         <AnimatePresence mode="wait">
 
+          {/* ── LOGIN ── */}
           {view === 'login' && (
             <motion.div key="login" initial={{opacity:0,x:-20}} animate={{opacity:1,x:0}} exit={{opacity:0,x:-20}}
               className="bg-white border border-black/8 p-7 shadow-sm">
@@ -195,6 +202,7 @@ export function StaffLoginPage() {
                 </motion.button>
               </div>
 
+              {/* Register link */}
               <div className="mt-5 pt-4 border-t border-black/6 text-center">
                 <div className="text-[11px] text-ink4 mb-3">Нет аккаунта?</div>
                 <button onClick={()=>setView('register')}
@@ -203,6 +211,7 @@ export function StaffLoginPage() {
                 </button>
               </div>
 
+              {/* Quick accounts (existing approved) */}
               <div className="mt-4 pt-4 border-t border-black/6">
                 <div className="text-[10px] text-ink4 font-semibold uppercase tracking-wide mb-2">Быстрый вход (демо)</div>
                 <div className="grid grid-cols-2 gap-1.5 max-h-40 overflow-y-auto pr-1">
@@ -227,9 +236,11 @@ export function StaffLoginPage() {
             </motion.div>
           )}
 
+          {/* ── REGISTER ── */}
           {view === 'register' && (
             <motion.div key="register" initial={{opacity:0,x:20}} animate={{opacity:1,x:0}} exit={{opacity:0,x:20}}
               className="bg-white border border-black/8 shadow-sm">
+              {/* Header */}
               <div className="p-5 border-b border-black/6 flex items-center gap-3">
                 <button onClick={()=>setView('login')} className="text-ink4 hover:text-ink transition-colors">
                   <ChevronLeft size={18}/>
@@ -240,6 +251,7 @@ export function StaffLoginPage() {
                 </div>
               </div>
 
+              {/* Info banner */}
               <div className="mx-5 mt-4 bg-amber-50 border border-amber-200 p-3 flex items-start gap-2">
                 <Clock size={13} className="text-amber-500 flex-shrink-0 mt-0.5"/>
                 <p className="text-[11px] text-amber-700 leading-relaxed font-inter">
@@ -254,6 +266,7 @@ export function StaffLoginPage() {
                   </div>
                 )}
 
+                {/* Full name */}
                 <div>
                   <label className="block text-[10px] font-bold text-ink2 uppercase tracking-wide mb-1.5">
                     Полное имя <span className="text-red-400">*</span>
@@ -263,6 +276,7 @@ export function StaffLoginPage() {
                     placeholder="Иванов Иван Иванович"/>
                 </div>
 
+                {/* Department */}
                 <div>
                   <label className="block text-[10px] font-bold text-ink2 uppercase tracking-wide mb-1.5">
                     Отдел <span className="text-red-400">*</span>
@@ -273,6 +287,7 @@ export function StaffLoginPage() {
                   </select>
                 </div>
 
+                {/* Role */}
                 <div>
                   <label className="block text-[10px] font-bold text-ink2 uppercase tracking-wide mb-1.5">
                     Должность
@@ -282,6 +297,7 @@ export function StaffLoginPage() {
                     placeholder="Например: Бухгалтер, Специалист..."/>
                 </div>
 
+                {/* Login */}
                 <div>
                   <label className="block text-[10px] font-bold text-ink2 uppercase tracking-wide mb-1.5">
                     Логин <span className="text-red-400">*</span>
@@ -295,6 +311,7 @@ export function StaffLoginPage() {
                   <div className="text-[9px] text-ink4 mt-1 font-inter">Только латиница и цифры, без пробелов</div>
                 </div>
 
+                {/* Password */}
                 <div>
                   <label className="block text-[10px] font-bold text-ink2 uppercase tracking-wide mb-1.5">
                     Пароль <span className="text-red-400">*</span>
@@ -310,6 +327,7 @@ export function StaffLoginPage() {
                   </div>
                 </div>
 
+                {/* Confirm password */}
                 <div>
                   <label className="block text-[10px] font-bold text-ink2 uppercase tracking-wide mb-1.5">
                     Подтвердите пароль <span className="text-red-400">*</span>
@@ -342,6 +360,7 @@ export function StaffLoginPage() {
             </motion.div>
           )}
 
+          {/* ── SUCCESS ── */}
           {view === 'success' && (
             <motion.div key="success" initial={{opacity:0,scale:.95}} animate={{opacity:1,scale:1}}
               className="bg-white border border-black/8 p-8 shadow-sm text-center">

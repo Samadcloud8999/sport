@@ -7,11 +7,13 @@ import { SectionLabel, SectionTitle, PageWrapper } from '../components/ui/index'
 
 const fade = { initial:{opacity:0,y:20}, animate:{opacity:1,y:0}, transition:{duration:.45} }
 
+// ── ABOUT ──────────────────────────────────────────────────
 export function AboutPage() {
   const { data, tr, lang } = useApp()
   return (
     <PageWrapper>
       <div className="pt-24 pb-16">
+        {/* Hero banner */}
         <div className="relative h-64 sm:h-80 overflow-hidden mb-12">
           <img src="https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=1400&q=80"
             alt="ЦПМС" className="w-full h-full object-cover"/>
@@ -28,6 +30,7 @@ export function AboutPage() {
         </div>
 
         <div className="max-w-6xl mx-auto px-4">
+          {/* Mission */}
           <div className="grid md:grid-cols-2 gap-12 mb-16 items-center">
             <motion.div {...fade} transition={{delay:.1}}>
               <div className="text-[10px] font-bold text-primary uppercase tracking-widest mb-3">Миссия</div>
@@ -49,6 +52,7 @@ export function AboutPage() {
             </motion.div>
           </div>
 
+          {/* Values */}
           <motion.div {...fade} transition={{delay:.2}} className="mb-16">
             <div className="text-center mb-10">
               <SectionLabel>Ценности</SectionLabel>
@@ -69,6 +73,7 @@ export function AboutPage() {
             </div>
           </motion.div>
 
+          {/* Infrastructure */}
           <motion.div {...fade} transition={{delay:.25}} className="mb-16">
             <div className="text-center mb-10">
               <SectionLabel>Инфраструктура</SectionLabel>
@@ -94,6 +99,7 @@ export function AboutPage() {
             </div>
           </motion.div>
 
+          {/* Leadership */}
           <motion.div {...fade} transition={{delay:.3}}>
             <div className="text-center mb-10">
               <SectionLabel>Команда</SectionLabel>
@@ -120,6 +126,7 @@ export function AboutPage() {
   )
 }
 
+// ── EVENTS ────────────────────────────────────────────────
 export function EventsPage() {
   const { data, tr } = useApp()
   const nav = useNavigate()
@@ -168,6 +175,7 @@ export function EventsPage() {
   )
 }
 
+// ── NEWS ──────────────────────────────────────────────────
 export function NewsPage() {
   const { data } = useApp()
   const [selected, setSelected] = useState(null)
@@ -203,6 +211,7 @@ export function NewsPage() {
         </div>
       </div>
 
+      {/* News modal */}
       <AnimatePresence>
         {selected&&(
           <motion.div initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}}
@@ -232,6 +241,7 @@ export function NewsPage() {
   )
 }
 
+// ── ATHLETE DETAIL PAGE ───────────────────────────────────
 export function AthleteDetailPage() {
   const { id } = useParams()
   const { data } = useApp()
@@ -247,6 +257,7 @@ export function AthleteDetailPage() {
             <ChevronLeft size={16}/> Назад к спортсменам
           </button>
           <div className="grid md:grid-cols-2 gap-8 items-start">
+            {/* Photo */}
             <motion.div {...fade}>
               <div className="relative overflow-hidden border border-black/8">
                 <img src={athlete.photo} alt={athlete.name} className="w-full h-96 object-cover"
@@ -261,6 +272,7 @@ export function AthleteDetailPage() {
                 </div>
               </div>
             </motion.div>
+            {/* Info */}
             <motion.div {...fade} transition={{delay:.1}} className="space-y-4">
               <div>
                 <div className="font-bebas text-3xl text-ink tracking-wide">{athlete.name}</div>
@@ -314,6 +326,7 @@ export function AthleteDetailPage() {
   )
 }
 
+// ── ATHLETES ──────────────────────────────────────────────
 export function AthletesPage() {
   const { data } = useApp()
   const nav = useNavigate()
@@ -333,6 +346,7 @@ export function AthletesPage() {
             <SectionTitle>СПОРТСМЕНЫ</SectionTitle>
             <p className="text-ink4 text-[12px] mb-6">Реестр спортсменов центра подготовки</p>
           </motion.div>
+          {/* Filters */}
           <div className="flex flex-wrap gap-3 mb-6">
             <input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Поиск..." className="!w-auto flex-1 min-w-48 !py-2 !text-[12px]"/>
             <select value={sportFilter} onChange={e=>setSportFilter(e.target.value)} className="!py-2 !text-[12px] !w-auto">
@@ -340,11 +354,13 @@ export function AthletesPage() {
               {sports.map(s=><option key={s} value={s}>{s}</option>)}
             </select>
           </div>
+          {/* Cards — large photo style */}
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {filtered.map((a,i)=>(
               <motion.div key={a.id} initial={{opacity:0,y:16}} animate={{opacity:1,y:0}} transition={{delay:i*.07}}
                 className="bg-white border border-black/8 overflow-hidden hover:border-primary/30 hover:shadow-lg transition-all group cursor-pointer"
                 onClick={()=>nav(`/athletes/${a.id}`)}>
+                {/* Large photo */}
                 <div className="h-64 relative overflow-hidden bg-surf3">
                   {a.photo?(
                     <img src={a.photo} alt={a.name} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
@@ -353,18 +369,22 @@ export function AthletesPage() {
                     <div className="w-full h-full flex items-center justify-center font-bebas text-6xl text-primary/30">{a.name[0]}</div>
                   )}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"/>
+                  {/* Overlay info */}
                   <div className="absolute bottom-0 left-0 right-0 p-4">
                     <div className="font-bebas text-xl text-white tracking-wide">{a.name}</div>
                     <div className="text-white/70 text-[11px] font-inter">{a.sport} · {a.region}</div>
                   </div>
+                  {/* Status badge */}
                   <div className={`absolute top-3 left-3 px-2 py-0.5 text-[9px] font-bold uppercase ${a.status==='active'?'bg-green-500 text-white':'bg-white/20 text-white border border-white/30'}`}>
                     {a.status==='active'?'Активен':'Резерв'}
                   </div>
+                  {/* Medals */}
                   <div className="absolute top-3 right-3 flex items-center gap-1 bg-black/40 px-2 py-0.5">
                     <Trophy size={10} className="text-yellow-400"/>
                     <span className="text-white text-[10px] font-bold">{a.medals}</span>
                   </div>
                 </div>
+                {/* Card info */}
                 <div className="p-4">
                   <div className="grid grid-cols-2 gap-2 text-[11px] mb-3">
                     <div className="bg-surf2 border border-black/6 p-2">
@@ -390,6 +410,7 @@ export function AthletesPage() {
   )
 }
 
+// ── SPORTS ────────────────────────────────────────────────
 export function SportsPage() {
   const { data, lang } = useApp()
   const sports = data.sports || []
@@ -405,11 +426,13 @@ export function SportsPage() {
             <SectionTitle>ВИДЫ <span className="text-primary">СПОРТА</span></SectionTitle>
             <p className="text-ink4 text-[12px] mb-8">Олимпийские виды спорта в программе центра</p>
           </motion.div>
+          {/* 3 per row */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {sports.map((s,i)=>(
               <motion.div key={s.id} initial={{opacity:0,scale:.96}} animate={{opacity:1,scale:1}} transition={{delay:i*.05}}
                 onClick={()=>setSelected(s)}
                 className="bg-white border border-black/8 overflow-hidden hover:border-primary/30 hover:shadow-lg transition-all group cursor-pointer hover-lift">
+                {/* Big photo */}
                 <div className="h-52 relative overflow-hidden bg-surf3">
                   {s.img&&(
                     <img src={s.img} alt={getName(s)} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
@@ -422,6 +445,7 @@ export function SportsPage() {
                     <span className="text-white/60 text-[10px] ml-1">спортсм.</span>
                   </div>
                 </div>
+                {/* Info */}
                 <div className="p-4">
                   <div className="font-bold text-[15px] text-ink group-hover:text-primary transition-colors mb-2">{getName(s)}</div>
                   <p className="text-[12px] text-ink4 leading-relaxed font-inter line-clamp-2">{s.desc}</p>
@@ -435,6 +459,7 @@ export function SportsPage() {
         </div>
       </div>
 
+      {/* Sport detail modal */}
       <AnimatePresence>
         {selected&&(
           <motion.div initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}}
@@ -466,6 +491,7 @@ export function SportsPage() {
   )
 }
 
+// ── REGIONS ───────────────────────────────────────────────
 export function RegionsPage() {
   const { data } = useApp()
   const [selected, setSelected] = useState(null)
@@ -538,6 +564,7 @@ export function RegionsPage() {
   )
 }
 
+// ── CONTACTS ──────────────────────────────────────────────
 export function ContactsPage() {
   const [sent, setSent] = useState(false)
   const [form, setForm] = useState({name:'',email:'',subject:'',message:''})
@@ -554,6 +581,7 @@ export function ContactsPage() {
           </motion.div>
 
           <div className="grid lg:grid-cols-3 gap-8">
+            {/* Contact info */}
             <motion.div {...fade} transition={{delay:.1}} className="space-y-4">
               {[
                 { icon:'📍', title:'Адрес', val:'г. Бишкек, проспект Чуй, 106\nКыргызская Республика, 720001' },
@@ -571,7 +599,9 @@ export function ContactsPage() {
               ))}
             </motion.div>
 
+            {/* Map + form */}
             <motion.div {...fade} transition={{delay:.15}} className="lg:col-span-2 space-y-5">
+              {/* Real OpenStreetMap embed for CAGS Bishkek */}
               <div className="border border-black/8 overflow-hidden" style={{height:280}}>
                 <iframe
                   title="ЦПМС КР на карте"
@@ -585,6 +615,7 @@ export function ContactsPage() {
                 <a href="https://www.openstreetmap.org/?mlat=42.87&mlon=74.59" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">Открыть в картах</a>
               </div>
 
+              {/* Contact form */}
               {sent?(
                 <div className="bg-green-50 border border-green-200 p-6 text-center">
                   <div className="text-3xl mb-3">✅</div>

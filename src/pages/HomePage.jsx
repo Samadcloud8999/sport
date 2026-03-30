@@ -8,6 +8,7 @@ import CarouselSection from '../components/sections/CarouselSection'
 import PartnersBanner from '../components/sections/PartnersBanner'
 import MapSection from '../components/sections/MapSection'
 
+// Programs section
 function ProgramsSection() {
   const { data, tr } = useApp()
   const programs = [
@@ -47,6 +48,7 @@ function ProgramsSection() {
   )
 }
 
+// Events section
 function EventsSection() {
   const { data, tr } = useApp()
   const nav = useNavigate()
@@ -97,6 +99,7 @@ function EventsSection() {
   )
 }
 
+// News section
 function NewsSection() {
   const { data } = useApp()
   const nav = useNavigate()

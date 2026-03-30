@@ -1,5 +1,6 @@
 import { createContext, useContext, useState } from 'react'
 import { initialData } from '../data/appData'
+import { initialResults, initialImportHistory, calcResultPoints } from '../data/scoringData'
 import { t as translations } from '../data/translations'
 
 const Ctx = createContext()
@@ -7,6 +8,9 @@ const Ctx = createContext()
 export function AppProvider({ children }) {
   const [lang, setLang] = useState('ru')
   const [data, setData] = useState(initialData)
+  const [results, setResults] = useState(initialResults)
+  const [importHistory, setImportHistory] = useState(initialImportHistory)
+  const [scoringRules, setScoringRules] = useState(null) // null = use defaults
   const [adminUser, setAdminUser] = useState(null)
   const [staffUser, setStaffUser] = useState(null)
 
@@ -53,7 +57,35 @@ export function AppProvider({ children }) {
   const rejectStaff  = (userId) => delItem('staffUsers', userId)
   const staffLogout = () => setStaffUser(null)
 
-  // Attendance
+  // ── Scoring / Results ───────────────────────────────────
+  const addResult = (result) => {
+    const pts = calcResultPoints(result)
+    const newResult = { ...result, id: Date.now(), points: pts }
+    setResults(prev => [...prev, newResult])
+    return newResult
+  }
+
+  const updResult = (id, patch) => {
+    setResults(prev => prev.map(r => {
+      if (r.id !== id) return r
+      const updated = { ...r, ...patch }
+      updated.points = calcResultPoints(updated)
+      return updated
+    }))
+  }
+
+  const delResult = (id) => setResults(prev => prev.filter(r => r.id !== id))
+
+  const addImport = (entry) => setImportHistory(prev => [{ ...entry, id: Date.now() }, ...prev])
+
+  // Check duplicate result
+  const isDuplicate = (result) => results.some(r =>
+    r.athleteId === result.athleteId &&
+    r.competition === result.competition &&
+    r.placement === result.placement
+  )
+
+  // ── Attendance
   const markAttendance = (userId) => {
     const key = `${userId}_${new Date().toISOString().split('T')[0]}`
     setData(p => ({ ...p, attendance: { ...p.attendance, [key]: new Date().toLocaleTimeString('ru-RU', {hour:'2-digit',minute:'2-digit'}) } }))
@@ -80,7 +112,7 @@ export function AppProvider({ children }) {
   }
 
   return (
-    <Ctx.Provider value={{ lang, setLang, tr, data, upd, addItem, updItem, delItem, updNested, adminUser, adminLogin, adminLogout, staffUser, staffLogin, staffLogout, staffRegister, approveStaff, rejectStaff, markAttendance, isCheckedIn, getCheckInTime, exportCSV }}>
+    <Ctx.Provider value={{ lang, setLang, tr, data, upd, addItem, updItem, delItem, updNested, adminUser, adminLogin, adminLogout, staffUser, staffLogin, staffLogout, staffRegister, approveStaff, rejectStaff, results, addResult, updResult, delResult, importHistory, addImport, isDuplicate, scoringRules, setScoringRules, markAttendance, isCheckedIn, getCheckInTime, exportCSV }}>
       {children}
     </Ctx.Provider>
   )

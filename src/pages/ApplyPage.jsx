@@ -77,7 +77,6 @@ export default function ApplyPage() {
           </div>
 
           <div className="bg-white border border-black/8 shadow-sm">
-            {/* Photo upload */}
             <div className="p-6 border-b border-black/6">
               <div className="text-[11px] font-bold text-ink2 uppercase tracking-wide mb-3">{T.photo}</div>
               <div className="flex items-start gap-4">
@@ -107,7 +106,6 @@ export default function ApplyPage() {
               </div>
             </div>
 
-            {/* Form fields */}
             <div className="p-6">
               <div className="grid md:grid-cols-2 gap-4">
                 <FormGroup label={T.name} required error={errors.name}>

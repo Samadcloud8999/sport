@@ -10,9 +10,12 @@ import {
   Menu, Home, Eye, EyeOff, RefreshCw, AlertCircle
 } from 'lucide-react'
 import { useApp } from '../context/AppContext'
+import FaceScanner from '../components/ui/FaceScanner'
+import { deleteFaceDescriptor, hasFaceDescriptor } from '../utils/faceRecognition'
 
 const DEPT_ICONS = { Users, DollarSign, GraduationCap, ShieldCheck, Heart, Trophy, Monitor, Scale, Newspaper, Globe }
 
+// ── AI Assistant ───────────────────────────────────────────
 function AIAssistant({ user, dept }) {
   const [messages, setMessages] = useState([
     { role:'assistant', text:`Привет, ${user.name.split(' ')[0]}! Я ваш ИИ-помощник ЦПМС КР. Помогу с документами, отчётами и рабочими вопросами. Чем могу помочь?` }
@@ -102,6 +105,7 @@ function AIAssistant({ user, dept }) {
   )
 }
 
+// ── Calculator ─────────────────────────────────────────────
 function AdvancedCalculator() {
   const [display, setDisplay] = useState('0')
   const [expr, setExpr] = useState('')
@@ -122,6 +126,7 @@ function AdvancedCalculator() {
       try{
         const full=expr+display
         const sanitized=full.replace(/×/g,'*').replace(/÷/g,'/').replace(/−/g,'-')
+        // eslint-disable-next-line no-new-func
         const result=new Function('return '+sanitized)()
         const rounded=Math.round(result*1e10)/1e10
         setHistory(h=>[{expr:full,result:rounded},...h.slice(0,9)])
@@ -230,13 +235,34 @@ function AdvancedCalculator() {
   )
 }
 
+// ── Attendance with Face ID ───────────────────────────────
 function AttendancePanel({ user }) {
-  const { markAttendance, isCheckedIn, getCheckInTime } = useApp()
+  const { markAttendance, isCheckedIn, getCheckInTime, data } = useApp()
   const checked = isCheckedIn(user.id)
   const checkTime = getCheckInTime(user.id)
   const today = new Date().toLocaleDateString('ru-RU',{weekday:'long',day:'numeric',month:'long'})
   const days = ['Пн','Вт','Ср','Чт','Пт']
   const week = days.map((d,i)=>({day:d,present:i<3||checked}))
+  const [showFace, setShowFace] = useState(false)
+  const [faceError, setFaceError] = useState('')
+  const [lastLocation, setLastLocation] = useState(null)
+  const [useFaceMode, setUseFaceMode] = useState(true)
+
+  const handleFaceSuccess = ({ staffId, distance }) => {
+    if (staffId !== user.id) {
+      setFaceError('Ошибка: обнаружено чужое лицо! Доступ запрещён.')
+      setShowFace(false)
+      return
+    }
+    markAttendance(user.id)
+    setShowFace(false)
+    setFaceError('')
+  }
+
+  const handleFaceError = (msg) => {
+    setFaceError(msg)
+    setShowFace(false)
+  }
 
   return (
     <div className="staff-card p-5">
@@ -245,17 +271,38 @@ function AttendancePanel({ user }) {
         <span className="font-bold text-[13px] text-ink">Посещаемость</span>
       </div>
       <p className="text-[11px] text-ink4 font-inter mb-4 capitalize">{today}</p>
-      {checked?(
+
+      {faceError && (
+        <div className="bg-red-50 border border-red-300 p-3 mb-4 flex items-start gap-2">
+          <AlertCircle size={14} className="text-red-500 flex-shrink-0 mt-0.5"/>
+          <div>
+            <div className="text-[12px] font-bold text-red-700">Ошибка идентификации</div>
+            <div className="text-[11px] text-red-600 font-inter">{faceError}</div>
+          </div>
+        </div>
+      )}
+
+      {checked ? (
         <div className="bg-green-50 border border-green-200 p-4 mb-4 text-center">
           <Check size={20} className="text-green-500 mx-auto mb-1"/>
           <div className="text-[12px] font-bold text-green-700">Отмечено в {checkTime}</div>
+          <div className="text-[10px] text-green-500 mt-1 font-inter flex items-center justify-center gap-1">
+            ✓ Идентификация по лицу подтверждена
+          </div>
         </div>
-      ):(
-        <button onClick={()=>markAttendance(user.id)}
-          className="w-full bg-primary hover:bg-red-700 text-white py-3 text-[12px] font-bold uppercase tracking-wide transition-all mb-4 flex items-center justify-center gap-2">
-          <Clock size={14}/> Отметиться сейчас
-        </button>
+      ) : (
+        <div className="space-y-2 mb-4">
+          <button onClick={() => { setFaceError(''); setShowFace(true) }}
+            className="w-full bg-primary hover:bg-red-700 text-white py-3 text-[12px] font-bold uppercase tracking-wide transition-all flex items-center justify-center gap-2">
+            <Camera size={14}/> Отметиться через Face ID
+          </button>
+          <button onClick={() => markAttendance(user.id)}
+            className="w-full border border-black/12 hover:border-primary text-ink3 hover:text-primary py-2 text-[11px] font-semibold uppercase tracking-wide transition-all flex items-center justify-center gap-2">
+            <Clock size={13}/> Отметиться вручную
+          </button>
+        </div>
       )}
+
       <div className="text-[10px] font-bold text-ink4 uppercase tracking-wide mb-2">Эта неделя</div>
       <div className="flex gap-2">
         {week.map(w=>(
@@ -265,10 +312,20 @@ function AttendancePanel({ user }) {
           </div>
         ))}
       </div>
+
+      {showFace && (
+        <FaceScanner
+          mode="identify"
+          staffUsers={data.staffUsers}
+          onIdentifySuccess={handleFaceSuccess}
+          onError={handleFaceError}
+          onClose={() => setShowFace(false)}/>
+      )}
     </div>
   )
 }
 
+// ── Tasks ──────────────────────────────────────────────────
 function TasksPanel({ user }) {
   const { data, updItem, addItem, delItem } = useApp()
   const [modal, setModal] = useState(false)
@@ -373,6 +430,7 @@ function TasksPanel({ user }) {
   )
 }
 
+// ── Files with Password ────────────────────────────────────
 function FilesPanel({ user }) {
   const { data, addItem } = useApp()
   const [dragging, setDragging] = useState(false)
@@ -502,6 +560,7 @@ function FilesPanel({ user }) {
         {files.length===0&&<div className="p-6 text-center text-ink4 text-[12px]">Файлов нет</div>}
       </div>
 
+      {/* Password generation modal */}
       {passwordModal&&(
         <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4" onClick={e=>e.target===e.currentTarget&&setPasswordModal(null)}>
           <motion.div initial={{opacity:0,scale:0.95}} animate={{opacity:1,scale:1}} className="bg-white max-w-sm w-full shadow-xl p-6">
@@ -542,6 +601,7 @@ function FilesPanel({ user }) {
         </div>
       )}
 
+      {/* Download with password modal */}
       {downloadModal&&(
         <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4" onClick={e=>e.target===e.currentTarget&&setDownloadModal(null)}>
           <motion.div initial={{opacity:0,scale:0.95}} animate={{opacity:1,scale:1}} className="bg-white max-w-sm w-full shadow-xl p-6">
@@ -584,6 +644,7 @@ function FilesPanel({ user }) {
   )
 }
 
+// ── Chat with photos ───────────────────────────────────────
 function ChatPanel({ user }) {
   const { data, addItem } = useApp()
   const [msg, setMsg] = useState('')
@@ -684,6 +745,7 @@ function ChatPanel({ user }) {
   )
 }
 
+// ── Department Page ────────────────────────────────────────
 function DepartmentPage({ deptId, currentUser }) {
   const { data } = useApp()
   const dept = data.departments.find(d=>d.id===deptId)
@@ -758,6 +820,7 @@ function DepartmentPage({ deptId, currentUser }) {
   )
 }
 
+// ── Dashboard ──────────────────────────────────────────────
 function Dashboard({ user, dept, DeptIcon, setActiveSection }) {
   const { data, isCheckedIn, getCheckInTime, markAttendance } = useApp()
   const checked = isCheckedIn(user.id)
@@ -879,6 +942,7 @@ function Dashboard({ user, dept, DeptIcon, setActiveSection }) {
   )
 }
 
+// ── Main Portal ────────────────────────────────────────────
 export default function StaffPortalPage() {
   const { staffUser, staffLogout, data, tr } = useApp()
   const nav = useNavigate()
@@ -920,8 +984,10 @@ export default function StaffPortalPage() {
 
   return (
     <div className="flex h-[100dvh] bg-surf2 overflow-hidden">
+      {/* Mobile overlay */}
       {sidebarOpen&&<div className="fixed inset-0 bg-black/40 z-40 lg:hidden" onClick={()=>setSidebarOpen(false)}/>}
 
+      {/* Sidebar */}
       <div className={`fixed lg:relative inset-y-0 left-0 z-50 lg:z-auto w-56 bg-white border-r border-black/8 flex flex-col transform transition-transform duration-300 ${sidebarOpen?'translate-x-0':'-translate-x-full lg:translate-x-0'}`}>
         <div className="p-4 border-b border-black/6">
           <div className="flex items-center justify-between mb-3">
@@ -974,6 +1040,7 @@ export default function StaffPortalPage() {
         </div>
       </div>
 
+      {/* Main */}
       <div className="flex-1 flex flex-col overflow-hidden min-w-0">
         <div className="h-14 bg-white border-b border-black/8 flex items-center justify-between px-4 flex-shrink-0">
           <div className="flex items-center gap-3">

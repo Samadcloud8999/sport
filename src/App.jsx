@@ -6,6 +6,7 @@ import Footer from './components/layout/Footer'
 import HomePage from './pages/HomePage'
 import ApplyPage from './pages/ApplyPage'
 import AdminPage from './pages/AdminPage'
+import ScoringPage from './pages/ScoringPage'
 import StaffPortalPage from './pages/StaffPortalPage'
 import { AdminLoginPage, StaffLoginPage } from './pages/LoginPages'
 import {
@@ -13,7 +14,7 @@ import {
   SportsPage, RegionsPage, ContactsPage, AthleteDetailPage
 } from './pages/PublicPages'
 
-const FULLSCREEN = ['/admin', '/staff', '/login', '/staff/login']
+const FULLSCREEN = ['/admin', '/staff', '/login', '/staff/login', '/scoring']
 
 function Layout({ children }) {
   const loc = useLocation()
@@ -47,6 +48,8 @@ export default function App() {
           <Route path="/login"         element={<AdminLoginPage/>}/>
           <Route path="/admin"         element={<AdminPage/>}/>
           <Route path="/admin/*"       element={<AdminPage/>}/>
+          <Route path="/scoring"       element={<ScoringPage/>}/>
+          <Route path="/scoring/*"     element={<ScoringPage/>}/>
           <Route path="/staff/login"   element={<StaffLoginPage/>}/>
           <Route path="/staff"         element={<StaffPortalPage/>}/>
           <Route path="/staff/*"       element={<StaffPortalPage/>}/>

@@ -13,7 +13,6 @@ import {
 
 const DEPT_ICONS = { Users, DollarSign, GraduationCap, ShieldCheck, HeartPulse, Trophy, Monitor, Scale, Newspaper, Globe }
 
-// ── Calculator ─────────────────────────────────────────────────────────────────
 function FinanceCalculator() {
   const [display, setDisplay] = useState('0')
   const [prev, setPrev] = useState(null)
@@ -133,7 +132,6 @@ function FinanceCalculator() {
   )
 }
 
-// ── Chat ───────────────────────────────────────────────────────────────────────
 function StaffChat({ currentUser, data, addItem }) {
   const [msg, setMsg] = useState('')
   const bottomRef = useRef()
@@ -180,7 +178,6 @@ function StaffChat({ currentUser, data, addItem }) {
   )
 }
 
-// ── Tasks ─────────────────────────────────────────────────────────────────────
 function Tasks({ currentUser, data, updItem, addItem, delItem }) {
   const [modal, setModal] = useState(false)
   const [form, setForm] = useState({title:'',desc:'',priority:'medium',dueDate:''})
@@ -251,7 +248,6 @@ function Tasks({ currentUser, data, updItem, addItem, delItem }) {
   )
 }
 
-// ── Files ─────────────────────────────────────────────────────────────────────
 function FileSharing({ currentUser, data, addItem }) {
   const fileRef = useRef()
   const [dragging, setDragging] = useState(false)
@@ -308,7 +304,6 @@ function FileSharing({ currentUser, data, addItem }) {
   )
 }
 
-// ── Main Staff Portal ─────────────────────────────────────────────────────────
 export default function StaffPortal() {
   const { data, staffUser, staffLogout, markAttendance, isCheckedIn, getCheckInTime, addItem, updItem, delItem } = useApp()
   const nav = useNavigate()
@@ -336,7 +331,6 @@ export default function StaffPortal() {
 
   const MyDashboard = () => (
     <div className="space-y-5">
-      {/* Attendance */}
       <div className="bg-white border border-black/8 p-5">
         <div className="flex items-center justify-between flex-wrap gap-3">
           <div>
@@ -360,7 +354,6 @@ export default function StaffPortal() {
         </div>
       </div>
 
-      {/* Stats row */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         {[
           { label:'Задач всего',      val:allTasks.length,                           color:'#CC0000', bg:'rgba(204,0,0,.08)',  Icon:FileText },
@@ -376,7 +369,6 @@ export default function StaffPortal() {
         ))}
       </div>
 
-      {/* My tasks preview */}
       <div className="bg-white border border-black/8 p-4">
         <div className="flex items-center justify-between mb-3">
           <div className="text-[12px] font-bold text-ink">Текущие задачи</div>
@@ -394,7 +386,6 @@ export default function StaffPortal() {
         {allTasks.filter(t=>t.status!=='done').length===0 && <p className="text-ink4 text-[11px]">Все задачи выполнены! 🎉</p>}
       </div>
 
-      {/* Recent files */}
       <div className="bg-white border border-black/8 p-4">
         <div className="flex items-center justify-between mb-3">
           <div className="text-[12px] font-bold text-ink">Последние файлы</div>
@@ -420,7 +411,6 @@ export default function StaffPortal() {
 
   return (
     <div className="flex h-screen overflow-hidden bg-surf2">
-      {/* Sidebar */}
       <div className="w-52 bg-white border-r border-black/8 flex flex-col flex-shrink-0">
         <div className="p-3.5 border-b border-black/8">
           <div className="flex items-center gap-2.5 mb-3">
@@ -468,7 +458,6 @@ export default function StaffPortal() {
         </div>
       </div>
 
-      {/* Content */}
       <div className="flex-1 flex flex-col overflow-hidden">
         <div className="h-12 bg-white border-b border-black/8 flex items-center justify-between px-5 flex-shrink-0">
           <div className="font-bebas text-xl text-ink tracking-wider">

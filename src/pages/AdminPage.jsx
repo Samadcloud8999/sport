@@ -1,13 +1,15 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { useNavigate, useLocation, Link } from 'react-router-dom'
 import {
   LayoutDashboard, Users, UserCheck, Calendar, FileText, UserPlus,
-  Newspaper, DollarSign, Map, Settings, LogOut, Bell,
+  Newspaper, DollarSign, Map, Settings, LogOut, Bell, Trophy,
   BarChart2, X, ChevronRight, Download, Plus, Edit2, Trash2,
   Check, XCircle, Search
 } from 'lucide-react'
 import { useApp } from '../context/AppContext'
+import FaceScanner from '../components/ui/FaceScanner'
+import { hasFaceDescriptor, deleteFaceDescriptor } from '../utils/faceRecognition'
 import {
   AreaChart, Area, BarChart, Bar, PieChart, Pie, Cell,
   XAxis, YAxis, Tooltip, ResponsiveContainer
@@ -95,6 +97,11 @@ function Sidebar({ activeTab, setTab, collapsed, setCollapsed }) {
           <ChevronRight size={14} className="flex-shrink-0 rotate-180" />
           {!collapsed && 'На сайт'}
         </Link>
+        <button onClick={() => nav('/scoring')}
+          className={`w-full flex items-center gap-2.5 px-3 py-2 text-amber-500 hover:text-amber-600 hover:bg-amber-50 transition-colors`}>
+          <Trophy size={15} className="flex-shrink-0" />
+          {!collapsed && <span className="text-[11px] font-semibold">Рейтинг</span>}
+        </button>
         <button onClick={() => { adminLogout(); nav('/login') }}
           className={`w-full flex items-center gap-2.5 px-3 py-2 text-red-400 hover:text-red-600 hover:bg-red-50 transition-colors`}>
           <LogOut size={15} className="flex-shrink-0" />
@@ -548,6 +555,80 @@ function NewsTab() {
   )
 }
 
+// ── ApprovedStaffRow with Face Registration ───────────────
+function ApprovedStaffRow({ u, dept, onDelete }) {
+  const { data } = useApp()
+  const [showFace, setShowFace] = useState(false)
+  const [hasFace, setHasFace] = useState(false)
+  const [checking, setChecking] = useState(true)
+
+  useEffect(() => {
+    hasFaceDescriptor(u.id).then(has => { setHasFace(has); setChecking(false) })
+  }, [u.id])
+
+  const handleRegistered = () => {
+    setHasFace(true)
+    setShowFace(false)
+  }
+
+  const handleDeleteFace = async () => {
+    await deleteFaceDescriptor(u.id)
+    setHasFace(false)
+  }
+
+  return (
+    <div className="flex flex-wrap items-center gap-3 p-4 hover:bg-surf2 transition-colors border-b border-black/4 last:border-0">
+      <img src={u.avatar} alt={u.name}
+        className="w-9 h-9 rounded-full object-cover border border-black/8 flex-shrink-0"
+        onError={e => { e.target.style.background = '#eee' }}/>
+      <div className="flex-1 min-w-0">
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="font-semibold text-[12px] text-ink">{u.name}</span>
+          <span className="badge badge-approved">Активен</span>
+          {!checking && (
+            hasFace
+              ? <span className="text-[9px] bg-green-100 text-green-700 border border-green-300 px-2 py-0.5 font-bold">📷 Face ID ✓</span>
+              : <span className="text-[9px] bg-amber-100 text-amber-700 border border-amber-300 px-2 py-0.5 font-bold">Нет Face ID</span>
+          )}
+        </div>
+        <div className="text-[10px] text-ink4 font-inter mt-0.5">
+          {dept?.name} · {u.role} · <span className="font-mono">@{u.login}</span>
+        </div>
+      </div>
+      <div className="flex gap-1 flex-shrink-0">
+        {!checking && !hasFace && (
+          <button onClick={() => setShowFace(true)}
+            title="Зарегистрировать лицо"
+            className="flex items-center gap-1 px-2 py-1.5 border border-blue-300 bg-blue-50 hover:bg-blue-100 text-blue-600 text-[10px] font-bold uppercase tracking-wide transition-all">
+            📷 Face ID
+          </button>
+        )}
+        {!checking && hasFace && (
+          <button onClick={handleDeleteFace}
+            title="Удалить Face ID"
+            className="flex items-center gap-1 px-2 py-1.5 border border-black/10 hover:border-amber-400 hover:text-amber-500 text-ink4 text-[10px] font-bold uppercase tracking-wide transition-all">
+            Удалить лицо
+          </button>
+        )}
+        <button onClick={onDelete}
+          className="w-7 h-7 flex items-center justify-center border border-black/10 hover:border-red-400 hover:text-red-500 text-ink4 transition-all"
+          title="Удалить сотрудника">
+          <Trash2 size={11}/>
+        </button>
+      </div>
+      {showFace && (
+        <FaceScanner
+          mode="register"
+          staffId={u.id}
+          staffUsers={data.staffUsers}
+          onRegisterSuccess={handleRegistered}
+          onError={() => setShowFace(false)}
+          onClose={() => setShowFace(false)}/>
+      )}
+    </div>
+  )
+}
+
 // ── Staff Registrations Tab ───────────────────────────────
 function StaffRegistrationsTab() {
   const { data, approveStaff, rejectStaff } = useApp()
@@ -638,25 +719,7 @@ function StaffRegistrationsTab() {
             {approved.map(u => {
               const dept = getDept(u.dept)
               return (
-                <div key={u.id} className="flex items-center gap-4 p-4 hover:bg-surf2 transition-colors">
-                  <img src={u.avatar} alt={u.name}
-                    className="w-9 h-9 rounded-full object-cover border border-black/8 flex-shrink-0"
-                    onError={e => { e.target.style.background = '#eee' }}/>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2">
-                      <span className="font-semibold text-[12px] text-ink">{u.name}</span>
-                      <span className="badge badge-approved">Активен</span>
-                    </div>
-                    <div className="text-[10px] text-ink4 font-inter mt-0.5">
-                      {dept?.name} · {u.role} · <span className="font-mono">@{u.login}</span>
-                    </div>
-                  </div>
-                  <button onClick={() => rejectStaff(u.id)}
-                    className="w-7 h-7 flex items-center justify-center border border-black/10 hover:border-red-400 hover:text-red-500 text-ink4 transition-all flex-shrink-0"
-                    title="Удалить сотрудника">
-                    <Trash2 size={11}/>
-                  </button>
-                </div>
+                <ApprovedStaffRow key={u.id} u={u} dept={dept} onDelete={() => rejectStaff(u.id)}/>
               )
             })}
             {approved.length === 0 && (

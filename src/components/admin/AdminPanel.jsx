@@ -98,6 +98,7 @@ function Sidebar({ activeTab, setActiveTab, collapsed, setCollapsed }) {
   )
 }
 
+// ── Dashboard ──────────────────────────────────────────────────────────────────
 function Dashboard({ setTab }) {
   const { data, exportCSV } = useApp()
   const ti = data.finances.income.reduce((s,x)=>s+x.v,0)
@@ -124,6 +125,7 @@ function Dashboard({ setTab }) {
         </button>
       </div>
 
+      {/* Stat cards */}
       <div className="grid grid-cols-2 xl:grid-cols-4 gap-4">
         {cards.map(c => (
           <div key={c.label} className="bg-white border border-black/8 p-4 hover:border-primary/20 transition-all hover-lift">
@@ -136,6 +138,7 @@ function Dashboard({ setTab }) {
         ))}
       </div>
 
+      {/* Charts */}
       <div className="grid lg:grid-cols-3 gap-4">
         <div className="lg:col-span-2 bg-white border border-black/8 p-5">
           <div className="flex items-center justify-between mb-4">
@@ -185,6 +188,7 @@ function Dashboard({ setTab }) {
         </div>
       </div>
 
+      {/* Expense breakdown */}
       <div className="bg-white border border-black/8 p-5">
         <div className="text-[12px] font-bold text-ink mb-4">Расходы по категориям</div>
         <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
@@ -200,6 +204,7 @@ function Dashboard({ setTab }) {
   )
 }
 
+// ── Athletes ───────────────────────────────────────────────────────────────────
 function Athletes() {
   const { data, addItem, updItem, delItem, exportCSV } = useApp()
   const [q, setQ] = useState('')
@@ -272,6 +277,7 @@ function Athletes() {
   )
 }
 
+// ── Applications ────────────────────────────────────────────────────────────────
 function Applications() {
   const { data, updItem, delItem, exportCSV } = useApp()
   const [filter, setFilter] = useState('all')
@@ -316,6 +322,7 @@ function Applications() {
   )
 }
 
+// ── Events CRUD ─────────────────────────────────────────────────────────────────
 function Events() {
   const { data, addItem, updItem, delItem } = useApp()
   const [modal, setModal] = useState(null)
@@ -374,6 +381,7 @@ function Events() {
   )
 }
 
+// ── News CRUD ───────────────────────────────────────────────────────────────────
 function News() {
   const { data, addItem, delItem } = useApp()
   const [modal, setModal] = useState(false)
@@ -429,6 +437,7 @@ function News() {
   )
 }
 
+// ── Finances ────────────────────────────────────────────────────────────────────
 function Finances() {
   const { data, exportCSV } = useApp()
   const ti = data.finances.income.reduce((s,x)=>s+x.v,0)
@@ -468,6 +477,7 @@ function Finances() {
   )
 }
 
+// ── Settings ────────────────────────────────────────────────────────────────────
 function AdminSettings() {
   const { data, upd } = useApp()
   const [saved, setSaved] = useState(false)
@@ -509,6 +519,7 @@ function AdminSettings() {
   )
 }
 
+// ── Coaches CRUD ────────────────────────────────────────────────────────────────
 function Coaches() {
   const { data, addItem, delItem } = useApp()
   const [modal, setModal] = useState(false)
@@ -563,6 +574,7 @@ function Coaches() {
   )
 }
 
+// ── Main Admin Panel ────────────────────────────────────────────────────────────
 export default function AdminPanel() {
   const { adminUser } = useApp()
   const nav = useNavigate()

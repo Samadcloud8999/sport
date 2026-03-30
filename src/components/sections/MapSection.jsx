@@ -24,34 +24,28 @@ function GlobeCanvas({ regions, onRegionClick }) {
     const camera = new THREE.PerspectiveCamera(42, W / H, 0.1, 100)
     camera.position.set(0, 0, 3.4)
 
-    // Lights
     scene.add(new THREE.AmbientLight(0xffffff, 0.5))
     const dl = new THREE.DirectionalLight(0xffffff, 1); dl.position.set(5,3,5); scene.add(dl)
     const dl2 = new THREE.DirectionalLight(0xff2200, 0.25); dl2.position.set(-4,-2,-4); scene.add(dl2)
     const pl = new THREE.PointLight(0xCC0000, 0.4, 5); pl.position.set(-2,2,2); scene.add(pl)
 
-    // Globe mesh
     const globe = new THREE.Mesh(
       new THREE.SphereGeometry(1, 64, 64),
       new THREE.MeshPhongMaterial({ color: 0x111111, emissive: 0x060606, specular: 0x333333, shininess: 40 })
     )
     scene.add(globe)
 
-    // Grid lines
     const gridMat = new THREE.MeshBasicMaterial({ color: 0x1a1a1a, wireframe: true, transparent: true, opacity: 0.1 })
     scene.add(new THREE.Mesh(new THREE.SphereGeometry(1.003, 28, 28), gridMat))
 
-    // Atmosphere
     const atmMat = new THREE.MeshPhongMaterial({ color: 0xCC0000, transparent: true, opacity: 0.06, side: THREE.BackSide })
     scene.add(new THREE.Mesh(new THREE.SphereGeometry(1.09, 32, 32), atmMat))
 
-    // Stars
     const sv = new Float32Array(2400)
     for (let i = 0; i < 2400; i++) sv[i] = (Math.random() - 0.5) * 80
     const sg = new THREE.BufferGeometry(); sg.setAttribute('position', new THREE.BufferAttribute(sv, 3))
     scene.add(new THREE.Points(sg, new THREE.PointsMaterial({ color: 0x333333, size: 0.05 })))
 
-    // Lat/lon to 3D
     const ll2v = (lat, lon, r = 1.02) => {
       const phi = (90 - lat) * Math.PI / 180
       const theta = (lon + 180) * Math.PI / 180
@@ -62,7 +56,6 @@ function GlobeCanvas({ regions, onRegionClick }) {
       )
     }
 
-    // Region markers
     const markers = []
     regions.forEach((r, ri) => {
       const pos = ll2v(r.lat, r.lon)
@@ -76,7 +69,6 @@ function GlobeCanvas({ regions, onRegionClick }) {
       scene.add(mesh)
       markers.push(mesh)
 
-      // Halo ring
       const ring = new THREE.Mesh(
         new THREE.RingGeometry(sz + 0.005, sz + 0.018, 20),
         new THREE.MeshBasicMaterial({ color: 0xCC0000, transparent: true, opacity: 0.35, side: THREE.DoubleSide })
@@ -86,7 +78,6 @@ function GlobeCanvas({ regions, onRegionClick }) {
       ring.userData = { isRing: true, regionIdx: ri }
       scene.add(ring)
 
-      // Vertical beam (light pillar effect)
       const beam = new THREE.Mesh(
         new THREE.CylinderGeometry(0.003, 0.001, 0.08, 6),
         new THREE.MeshBasicMaterial({ color: 0xCC0000, transparent: true, opacity: 0.5 })
@@ -96,7 +87,6 @@ function GlobeCanvas({ regions, onRegionClick }) {
       scene.add(beam)
     })
 
-    // Orbit controls (manual)
     let drag = false, prev = { x: 0, y: 0 }, vel = { x: 0, y: 0 }
     const ray = new THREE.Raycaster()
     const mouse = new THREE.Vector2()
@@ -135,7 +125,6 @@ function GlobeCanvas({ regions, onRegionClick }) {
       }
     })
 
-    // Focus on KG
     scene.rotation.y = -74.59 * Math.PI / 180
     scene.rotation.x = -42.87 * Math.PI / 180 * 0.2
 
@@ -153,7 +142,6 @@ function GlobeCanvas({ regions, onRegionClick }) {
     }
     animate()
 
-    // Resize
     const onResize = () => {
       const nW = canvas.offsetWidth
       renderer.setSize(nW, H)

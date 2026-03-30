@@ -6,7 +6,6 @@ export default function PartnersBanner() {
   const partners = data.partners || []
   const trackRef = useRef(null)
 
-  // Duplicate for infinite loop
   const doubled = [...partners, ...partners]
 
   return (
@@ -16,7 +15,6 @@ export default function PartnersBanner() {
         <div className="h-px bg-white/8 flex-1"/>
       </div>
       <div className="relative overflow-hidden">
-        {/* Fade edges */}
         <div className="absolute left-0 top-0 bottom-0 w-12 bg-gradient-to-r from-[#0a0a0a] to-transparent z-10 pointer-events-none"/>
         <div className="absolute right-0 top-0 bottom-0 w-12 bg-gradient-to-l from-[#0a0a0a] to-transparent z-10 pointer-events-none"/>
         <div className="partners-track flex items-center gap-10 py-2">

@@ -31,13 +31,11 @@ export default function HeroSection() {
     <section className="relative min-h-screen flex flex-col overflow-hidden bg-white">
       <div className="absolute inset-0 bg-grid-light opacity-60" />
       <div className="absolute inset-0 bg-gradient-to-br from-white via-white to-red-50/40" />
-      {/* Decorative shapes */}
       <div className="absolute top-0 right-0 w-1/3 h-full bg-gradient-to-l from-primary/3 to-transparent pointer-events-none" />
       <div className="absolute bottom-0 right-1/4 w-80 h-80 bg-gold/5 rounded-full blur-3xl pointer-events-none" />
 
       <div className="relative max-w-7xl mx-auto px-4 pt-32 pb-16 flex-1 flex items-center w-full">
         <div className="grid lg:grid-cols-2 gap-16 items-center w-full">
-          {/* Left */}
           <motion.div initial={{ opacity:0, x:-30 }} animate={{ opacity:1, x:0 }} transition={{ duration:.6 }}>
             <div className="inline-flex items-center gap-2 bg-primary/6 border border-primary/20 px-3 py-1.5 mb-6">
               <div className="w-1.5 h-1.5 bg-primary rounded-full animate-pulse" />
@@ -67,7 +65,6 @@ export default function HeroSection() {
                 {tr.hero.btn2}
               </motion.button>
             </div>
-            {/* Stats */}
             <div className="flex gap-8 mt-10 pt-8 border-t border-black/8">
               {[
                 { val: athletes.toLocaleString(), lbl: tr.stats.athletes, color: 'text-primary' },
@@ -82,10 +79,8 @@ export default function HeroSection() {
             </div>
           </motion.div>
 
-          {/* Right cards */}
           <motion.div initial={{ opacity:0, x:30 }} animate={{ opacity:1, x:0 }} transition={{ duration:.6, delay:.1 }}
             className="hidden lg:flex flex-col gap-3">
-            {/* Medals card */}
             <div className="bg-white border border-black/8 p-5 hover:border-primary/30 hover:shadow-md transition-all">
               <div className="flex items-center gap-3 mb-4">
                 <div className="w-9 h-9 bg-primary/8 flex items-center justify-center"><Trophy size={18} className="text-primary" /></div>
@@ -103,7 +98,6 @@ export default function HeroSection() {
                 ))}
               </div>
             </div>
-            {/* Next event */}
             <div className="bg-white border border-black/8 p-4 hover:border-primary/30 transition-all">
               <div className="flex items-center gap-3 mb-3">
                 <div className="w-9 h-9 bg-primary/8 flex items-center justify-center"><Calendar size={18} className="text-primary" /></div>
@@ -126,7 +120,6 @@ export default function HeroSection() {
                 <div className="h-1 bg-surf3 overflow-hidden"><div className="h-full bg-primary" style={{width:`${Math.round((data.events[0]?.registered||0)/(data.events[0]?.slots||1)*100)}%`}} /></div>
               </div>
             </div>
-            {/* Regions */}
             <div className="bg-white border border-black/8 p-4 hover:border-primary/30 transition-all">
               <div className="flex items-center gap-3 mb-3">
                 <div className="w-9 h-9 bg-primary/8 flex items-center justify-center"><Globe size={18} className="text-primary" /></div>
